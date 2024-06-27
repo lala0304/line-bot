@@ -12,8 +12,8 @@ load_dotenv()  # 加载 .env 文件
 
 app = Flask(__name__)
 
-LINE_CHANNEL_ACCESS_TOKEN = os.getenv(JkW7rJP8rQxVZSl8bl++bdVgTbOkPvJefah1hPmC07xh+qFvXawciuNC2iDOSgtbWIizaJvS1rYWjARdvjPPzzk/vZ/RQ+3cD61Lt/tU/D5eSUHvygVHIprXeCp4mxrHlUq8oR5N1X7bLFcjNM7FLQdB04t89/1O/w1cDnyilFU=)
-LINE_CHANNEL_SECRET = os.getenv(f475bd13e3d5d5fc374837d7bec07089)
+LINE_CHANNEL_ACCESS_TOKEN = os.getenv('JkW7rJP8rQxVZSl8bl++bdVgTbOkPvJefah1hPmC07xh+qFvXawciuNC2iDOSgtbWIizaJvS1rYWjARdvjPPzzk/vZ/RQ+3cD61Lt/tU/D5eSUHvygVHIprXeCp4mxrHlUq8oR5N1X7bLFcjNM7FLQdB04t89/1O/w1cDnyilFU=')
+LINE_CHANNEL_SECRET = os.getenv('f475bd13e3d5d5fc374837d7bec07089')
 
 if LINE_CHANNEL_ACCESS_TOKEN is None or LINE_CHANNEL_SECRET is None:
     raise ValueError("環境變數 LINE_CHANNEL_ACCESS_TOKEN 或 LINE_CHANNEL_SECRET 未設置")
