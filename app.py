@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -11,6 +12,10 @@ from dotenv import load_dotenv
 load_dotenv()  # 加載 .env 文件
 
 app = Flask(__name__)
+
+# 配置日誌
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # 加載環境變數
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN')
@@ -35,11 +40,15 @@ def callback():
     return 'OK'  # 確保返回 200 狀態碼
 
 def send_drink_water_reminder():
-    # 這裡使用 broadcast 來發送消息給所有用戶
-    message = TextSendMessage(text='記得喝水哦！💧')
-    line_bot_api.broadcast(message)
+    try:
+        message = TextSendMessage(text='記得喝水哦！💧')
+        line_bot_api.broadcast(message)
+        logger.info("Sent drink water reminder to all users")
+    except Exception as e:
+        logger.error(f"Failed to send drink water reminder: {e}")
 
 def schedule_task():
+    logger.info("Scheduling tasks")
     schedule.every().day.at("07:00").do(send_drink_water_reminder)
     schedule.every().day.at("09:00").do(send_drink_water_reminder)
     schedule.every().day.at("11:30").do(send_drink_water_reminder)
@@ -48,13 +57,26 @@ def schedule_task():
     schedule.every().day.at("17:30").do(send_drink_water_reminder)
     schedule.every().day.at("19:00").do(send_drink_water_reminder)
     schedule.every().day.at("21:30").do(send_drink_water_reminder)
+    
     while True:
         schedule.run_pending()
-        time.sleep(1)
+        logger.info("Running pending tasks")
+        time.sleep(60)  # 改為 60 秒以減少日誌量
 
 def run_app():
-    threading.Thread(target=schedule_task).start()
+    logger.info("Starting scheduled tasks")
+    schedule_thread = threading.Thread(target=schedule_task)
+    schedule_thread.daemon = True  # 讓線程在主程序結束時自動結束
+    schedule_thread.start()
+    logger.info("Starting Flask app")
     app.run(host='0.0.0.0', port=5000)
 
 if __name__ == "__main__":
     run_app()
+@app.route("/test_reminder", methods=['GET'])
+def test_reminder():
+    send_drink_water_reminder()
+    return 'Test reminder sent', 200
+
+python app.py
+
