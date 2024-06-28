@@ -29,6 +29,10 @@ if LINE_CHANNEL_ACCESS_TOKEN is None or LINE_CHANNEL_SECRET is None:
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
+@app.route("/", methods=['GET'])
+def home():
+    return 'Hello, this is the LINE Bot server.', 200
+
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
@@ -73,10 +77,3 @@ def run_app():
 
 if __name__ == "__main__":
     run_app()
-@app.route("/test_reminder", methods=['GET'])
-def test_reminder():
-    send_drink_water_reminder()
-    return 'Test reminder sent', 200
-
-python app.py
-
