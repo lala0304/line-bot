@@ -1,14 +1,14 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import TextSendMessage
 import schedule
 import time
 import threading
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # 加载 .env 文件
+load_dotenv()  # 加載 .env 文件
 
 app = Flask(__name__)
 
@@ -16,13 +16,13 @@ app = Flask(__name__)
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN')
 LINE_CHANNEL_SECRET = os.getenv('LINE_CHANNEL_SECRET')
 
+# 確認環境變數已設置
 if LINE_CHANNEL_ACCESS_TOKEN is None or LINE_CHANNEL_SECRET is None:
     raise ValueError("環境變數 LINE_CHANNEL_ACCESS_TOKEN 或 LINE_CHANNEL_SECRET 未設置")
 
+# 設置 Line Bot API 和 WebhookHandler
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
-
-user_ids = []
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -32,22 +32,12 @@ def callback():
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
-    return 'OK'
-
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    user_id = event.source.user_id
-    if user_id not in user_ids:
-        user_ids.append(user_id)
-    reply_message = "已經記錄你的 ID，會在特定時間提醒你喝水。"
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply_message)
-    )
+    return 'OK'  # 確保返回 200 狀態碼
 
 def send_drink_water_reminder():
-    for user_id in user_ids:
-        line_bot_api.push_message(user_id, TextSendMessage(text='記得喝水哦！'))
+    # 這裡使用 broadcast 來發送消息給所有用戶
+    message = TextSendMessage(text='記得喝水哦！💧')
+    line_bot_api.broadcast(message)
 
 def schedule_task():
     schedule.every().day.at("07:00").do(send_drink_water_reminder)
