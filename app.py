@@ -66,10 +66,11 @@ def schedule_task():
     schedule.every().day.at("13:00").do(send_drink_water_reminder, message='☕ 午餐後的一杯水，現在是下午1點，有助於消化，保持健康！')
     schedule.every().day.at("15:30").do(send_drink_water_reminder, message='🌟 下午茶時間到了，現在是下午3點半，來杯水，保持頭腦清醒，繼續高效工作！')
     schedule.every().day.at("17:30").do(send_drink_water_reminder, message='🌅 工作接近尾聲，現在是下午5點半，來杯水，給今天畫個完美的句號！')
-    schedule.every().day.at("17:48").do(send_drink_water_reminder, message='🌅 工作接近尾聲，現在是下午5點半，來杯水，給今天畫個完美的句號！')
     schedule.every().day.at("19:00").do(send_drink_water_reminder, message='🌙 晚飯時間到了，現在是晚上7點，先來一杯水，幫助消化更健康！')
     schedule.every().day.at("21:30").do(send_drink_water_reminder, message='🌜 現在是晚上9點半，睡前喝杯水，保持身體水分充足，迎接美好的夢境！')
     
+     # 臨時測試：每分鐘發送一次消息
+    schedule.every().minute.at(":00").do(send_drink_water_reminder, message='這是一條測試消息。')
     while True:
         # 運行所有的定時任務
         schedule.run_pending()
@@ -82,6 +83,7 @@ def run_app():
     schedule_thread = threading.Thread(target=schedule_task)
     schedule_thread.daemon = True  # 讓線程在主程序結束時自動結束
     schedule_thread.start()
+    logger.info("Scheduled tasks started successfully")
     logger.info("Starting Flask app")
     # 啟動 Flask 應用
     app.run(host='0.0.0.0', port=5000)
