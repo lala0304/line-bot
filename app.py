@@ -50,6 +50,7 @@ def callback():
 
 # 設置不同時段的喝水提醒訊息
 def send_drink_water_reminder(message):
+    logger.info(f"Attempting to send message: {message}")
     try:
         # 推送消息給所有用戶
         line_bot_api.broadcast(TextSendMessage(text=message))
@@ -69,12 +70,13 @@ def schedule_task():
     schedule.every().day.at("19:00").do(send_drink_water_reminder, message='🌙 晚飯時間到了，現在是晚上7點，先來一杯水，幫助消化更健康！')
     schedule.every().day.at("21:30").do(send_drink_water_reminder, message='🌜 現在是晚上9點半，睡前喝杯水，保持身體水分充足，迎接美好的夢境！')
     
-     # 臨時測試：每分鐘發送一次消息
+    # 臨時測試：每分鐘發送一次消息
     schedule.every().minute.at(":00").do(send_drink_water_reminder, message='這是一條測試消息。')
+
     while True:
+        logger.info("Checking scheduled tasks")
         # 運行所有的定時任務
         schedule.run_pending()
-        logger.info("Running pending tasks")
         time.sleep(60)  # 改為 60 秒以減少日誌量
 
 def run_app():
