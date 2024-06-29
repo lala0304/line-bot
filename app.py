@@ -64,7 +64,6 @@ def schedule_task():
     schedule.every().day.at("09:00").do(send_drink_water_reminder, message='🚀 工作要有衝勁，現在是早上9點，別忘了喝水提神哦！💧')
     schedule.every().day.at("11:30").do(send_drink_water_reminder, message='🍽 午餐時間快到了，現在是11點半，先喝杯水，準備迎接美味吧！')
     schedule.every().day.at("13:00").do(send_drink_water_reminder, message='☕ 午餐後的一杯水，現在是下午1點，有助於消化，保持健康！')
-    schedule.every().day.at("14:30").do(send_drink_water_reminder, message='☕')    
     schedule.every().day.at("15:30").do(send_drink_water_reminder, message='🌟 下午茶時間到了，現在是下午3點半，來杯水，保持頭腦清醒，繼續高效工作！')
     schedule.every().day.at("17:30").do(send_drink_water_reminder, message='🌅 工作接近尾聲，現在是下午5點半，來杯水，給今天畫個完美的句號！')
     schedule.every().day.at("19:00").do(send_drink_water_reminder, message='🌙 晚飯時間到了，現在是晚上7點，先來一杯水，幫助消化更健康！')
