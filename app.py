@@ -69,9 +69,6 @@ def schedule_task():
     schedule.every().day.at("17:30").do(send_drink_water_reminder, message='🌅 工作接近尾聲，現在是下午5點半，來杯水，給今天畫個完美的句號！')
     schedule.every().day.at("19:00").do(send_drink_water_reminder, message='🌙 晚飯時間到了，現在是晚上7點，先來一杯水，幫助消化更健康！')
     schedule.every().day.at("21:30").do(send_drink_water_reminder, message='🌜 現在是晚上9點半，睡前喝杯水，保持身體水分充足，迎接美好的夢境！')
-    
-    # 臨時測試：每分鐘發送一次消息
-    schedule.every().minute.at(":00").do(send_drink_water_reminder, message='這是一條測試消息。')
 
     while True:
         logger.info("Checking scheduled tasks")
