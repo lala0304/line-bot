@@ -8,8 +8,6 @@ import time
 import threading
 import os
 from dotenv import load_dotenv
-import pytz
-from datetime import datetime
 
 load_dotenv()  # 加載 .env 文件
 
@@ -45,6 +43,12 @@ def callback():
         abort(400)
     return 'OK'  # 確保返回 200 狀態碼
 
+@app.route("/test", methods=['GET'])
+def test_message():
+    message = "這是一條測試消息。"
+    send_drink_water_reminder(message)
+    return 'Test message sent!', 200
+
 def send_drink_water_reminder(message):
     logger.info(f"Attempting to send message: {message}")
     try:
@@ -55,11 +59,6 @@ def send_drink_water_reminder(message):
 
 def schedule_task():
     logger.info("Scheduling tasks")
-    # 設置台灣時區
-    tz = pytz.timezone('Asia/Taipei')
-    now = datetime.now(tz)
-    logger.info(f"Current time in Taiwan: {now.strftime('%Y-%m-%d %H:%M:%S')}")
-
     # 設置不同時段的定時任務
     schedule.every().day.at("07:00").do(send_drink_water_reminder, message='🌞 早安！現在是早上7點，新的開始，先來一杯清新的水，喚醒一整天的活力吧！')
     schedule.every().day.at("09:00").do(send_drink_water_reminder, message='🚀 工作要有衝勁，現在是早上9點，別忘了喝水提神哦！💧')
@@ -68,14 +67,10 @@ def schedule_task():
     schedule.every().day.at("15:30").do(send_drink_water_reminder, message='🌟 下午茶時間到了，現在是下午3點半，來杯水，保持頭腦清醒，繼續高效工作！')
     schedule.every().day.at("17:30").do(send_drink_water_reminder, message='🌅 工作接近尾聲，現在是下午5點半，來杯水，給今天畫個完美的句號！')
     schedule.every().day.at("19:00").do(send_drink_water_reminder, message='🌙 晚飯時間到了，現在是晚上7點，先來一杯水，幫助消化更健康！')
-    schedule.every().day.at("20:15").do(send_drink_water_reminder, message='🌙 晚飯時間到了，現在是晚上7點，先來一杯水，幫助消化更健康！')
     schedule.every().day.at("21:30").do(send_drink_water_reminder, message='🌜 現在是晚上9點半，睡前喝杯水，保持身體水分充足，迎接美好的夢境！')
 
     while True:
         logger.info("Checking scheduled tasks")
-        # 獲取當前時間
-        now = datetime.now(tz)
-        logger.info(f"Current time in Taiwan: {now.strftime('%Y-%m-%d %H:%M:%S')}")
         # 運行所有的定時任務
         schedule.run_pending()
         time.sleep(60)  # 改為 60 秒以減少日誌量
